@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -21,7 +22,9 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
+    <div className="min-h-screen  bg-gray-100">
+      <Navbar/>
+      <div className='flex'>
       {/* Sidebar */}
       <aside className="w-64 bg-gray-900 text-white shadow-md h-screen p-4">
         <h2 className="text-xl font-bold mb-6">Dashboard</h2>
@@ -73,6 +76,7 @@ const Profile = () => {
           </div>
         </div>
       </main>
+    </div>
     </div>
   );
 };

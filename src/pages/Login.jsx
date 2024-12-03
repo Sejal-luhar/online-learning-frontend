@@ -10,23 +10,28 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setIsLoading(true);
     setError('');
-    
+  
     try {
+      console.log('Login Payload:', { email, password }); // Debugging payload
       const response = await API.post('/auth/login', { email, password });
-      console.log('Login successful:', response.data); // Check response
+      console.log('Login Response:', response.data); // Debugging response
+  
+      // Extract user and token from response
       const { user, token } = response.data;
+  
+      // Store user details and token in local storage
       localStorage.setItem('user', JSON.stringify(user));
       localStorage.setItem('token', token); // If your backend provides a token
-      console.log('Login Payload:', { email, password }); // Payload being sent
-console.log('Login Response:', response.data); // Server response
-console.log('Redirecting to dashboard'); // Redirection check
-
-      navigate('/dashboard'); // Redirect to dashboard
-      
-      
+  
+      // Show success alert
+      alert('Login successful! Redirecting to your dashboard.');
+  
+      // Redirect to dashboard
+      console.log('Redirecting to dashboard');
+      navigate('/dashboard');
     } catch (err) {
       console.error('Login Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Invalid credentials or server error.');
@@ -34,6 +39,7 @@ console.log('Redirecting to dashboard'); // Redirection check
       setIsLoading(false);
     }
   };
+  
   
   
   
