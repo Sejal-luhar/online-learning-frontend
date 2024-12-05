@@ -6,43 +6,30 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false); // Loading state
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Toggle for password visibility
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-  
+
     try {
-      console.log('Login Payload:', { email, password }); // Debugging payload
       const response = await API.post('/auth/login', { email, password });
-      console.log('Login Response:', response.data); // Debugging response
-  
-      // Extract user and token from response
       const { user, token } = response.data;
-  
-      // Store user details and token in local storage
+
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('token', token); // If your backend provides a token
-  
-      // Show success alert
+      localStorage.setItem('token', token);
+
       alert('Login successful! Redirecting to your dashboard.');
-  
-      // Redirect to dashboard
-      console.log('Redirecting to dashboard');
       navigate('/dashboard');
     } catch (err) {
-      console.error('Login Error:', err.response?.data || err.message);
       setError(err.response?.data?.message || 'Invalid credentials or server error.');
     } finally {
       setIsLoading(false);
     }
   };
-  
-  
-  
-  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -60,7 +47,10 @@ const Login = () => {
               type="email"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError(''); // Clear error when input changes
+              }}
               className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring focus:ring-blue-300"
               required
             />
@@ -71,15 +61,27 @@ const Login = () => {
             <label htmlFor="password" className="block text-gray-700 font-medium mb-1">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring focus:ring-blue-300"
-              required
-            />
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError(''); // Clear error when input changes
+                }}
+                className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring focus:ring-blue-300"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 px-3 text-gray-500"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
           </div>
 
           {/* Login Button */}

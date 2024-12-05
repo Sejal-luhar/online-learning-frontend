@@ -15,14 +15,18 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated by verifying the token in localStorage
     const token = localStorage.getItem('token');
+
+    // Optional: Add token expiry validation logic here
     setIsAuthenticated(!!token);
-  }, []);
-  
+
+    // Redirect to login if not authenticated when accessing protected routes
+    if (!token && window.location.pathname !== '/auth' && window.location.pathname !== '/signup') {
+      navigate('/auth');
+    }
+  }, [navigate]);
 
   const handleAuthentication = (status) => {
-    // Function to dynamically update the authentication state
     setIsAuthenticated(status);
   };
 
@@ -30,8 +34,9 @@ const App = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setIsAuthenticated(false);
-    navigate("/auth")
+    navigate('/auth');
   };
+
 
   return (
     <>
@@ -54,13 +59,13 @@ const App = () => {
           }
         />
         <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute isAuthenticated={isAuthenticated}>
-              <Dashboard onLogout={handleLogout} />
-            </PrivateRoute>
-          }
-        />
+        path="/dashboard"
+        element={
+          <PrivateRoute isAuthenticated={isAuthenticated}>
+            <Dashboard onLogout={handleLogout} />
+          </PrivateRoute>
+        }
+      />
                 <Route path="/my-courses" element={
                 <PrivateRoute isAuthenticated={isAuthenticated}>
               <MyCourses onLogout={handleLogout} />
