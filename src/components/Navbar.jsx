@@ -16,14 +16,16 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await API.get('/auth/logout'); // Ensure backend supports logout API
-      localStorage.clear(); // Clear user data
-      setIsAuthenticated(false); // Update the authentication state
-      navigate('/login');
+      await API.post('/auth/logout', {}, { withCredentials: true }); // Ensure cookies are sent
+      localStorage.clear(); // Clear local storage
+      setIsAuthenticated(false); // Update authentication state
+      navigate('/login'); // Redirect to login
     } catch (err) {
-      alert('Logout failed');
+      console.error('Logout failed:', err);
+      alert(err.response?.data?.message || 'Logout failed. Please try again.');
     }
   };
+  
 
   return (
     <nav className="bg-gray-900 text-white shadow-md">
